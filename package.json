@@ -1,0 +1,18 @@
+{
+  "name": "textbeast",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": "bin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cli-spinner": "^0.2.10",
+    "convert-array-to-csv": "^1.0.8",
+    "nodemon": "^1.18.11",
+    "xlsx": "^0.14.4"
+  }
+}
