@@ -1,3 +1,3 @@
-const init = require('./build')
-
-init();
+const names = require("./names");
+const init = require("./build");
+init(names);

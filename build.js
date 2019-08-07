@@ -1,24 +1,24 @@
 const fs = require("fs");
 const { promisify } = require("util");
 const { convertArrayToCSV } = require("convert-array-to-csv");
-const { asyncForEach, clean } = require("./util");
+const { asyncForEach, clean, findName, findPhone } = require("./util");
 const readFile = promisify(fs.readFile);
+3;
 const Path = require("path");
 const CommonLibrary = require("./common.json");
 const Spinner = require("cli-spinner").Spinner;
 
 // Extend Common Values
 const extension = ["-", "Delivered", "(iMessage)", "PM", "AM", "ADD"];
+const fileExtension = ".html";
+const path = "./Archive/";
+// Prod
+// const path = Path.dirname(process.execPath) + "/";
 
 CommonLibrary.commonWords = CommonLibrary.commonWords.concat(extension);
 
 //
 //
-
-// const path = "./";
-
-// Prod
-const path = Path.dirname(process.execPath) + "/";
 
 const namePull = (arr, i, pos) => {
   let name = "";
@@ -38,50 +38,43 @@ const namePull = (arr, i, pos) => {
   return name;
 };
 
-const buildRow = async files => {
+const buildRow = async (files, dataset) => {
   const output = [];
 
   await asyncForEach(files, async file => {
+    // Spinner
     const spinner = new Spinner(file + " " + "processing..");
     spinner.setSpinnerString("|/-\\");
     spinner.start();
 
-    const number = file.replace(",", " ").split(" ")[0];
-    console.info("Pulled" + number);
-    const rawContent = await readFile(path + file, "utf16le");
+    // Build Logic
+    const rawContent = await readFile(path + file, "utf8");
     const content = clean(rawContent);
 
-    const firstLastName = content.reduce((acc, val, i, arr) => {
-      if (val.includes("+")) {
-        const name = namePull(arr, i, 1);
-
-        name.length > 0 ? ((acc = name), console.info("Found " + name)) : null;
-        return acc;
-      }
-      return acc;
-    }, null);
+    // const phoneNumber = file.replace(",", " ").split(" ")[0];
+    const phoneNumber = findPhone(content);
+    const firstLastName = findName(content, phoneNumber, dataset);
 
     output.push({
-      Phone: number,
+      Phone: phoneNumber,
       Name: firstLastName
     });
-    console.info("Finished with" + file);
     spinner.stop();
   });
 
   return output;
 };
 
-const init = () => {
+const init = names => {
+  // Read Files
   fs.readdir(path, async (err, files) => {
     files = files.reduce((acc, e, i) => {
-      e.includes(".txt") ? acc.push(e) : null;
+      e.includes(fileExtension) ? acc.push(e) : null;
       return acc;
     }, []);
-
+    // Start Build
     if (files.length > 0) {
-      const data = await buildRow(files);
-
+      const data = await buildRow(files, names);
       const csv = convertArrayToCSV(data);
       fs.writeFile(
         path + "output.csv",
