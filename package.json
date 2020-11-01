@@ -15,7 +15,7 @@
   "dependencies": {
     "cli-spinner": "^0.2.10",
     "convert-array-to-csv": "^1.0.8",
-    "html-to-text": "^5.1.1",
+    "html-to-text": "^6.0.0",
     "inquirer": "^7.0.0",
     "nodemon": "^1.18.11",
     "phone-number-extractor": "^1.1.0",
