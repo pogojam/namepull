@@ -19,6 +19,6 @@
     "inquirer": "^7.0.0",
     "nodemon": "^1.18.11",
     "phone-number-extractor": "^1.1.0",
-    "xlsx": "^0.14.4"
+    "xlsx": "^0.17.0"
   }
 }
